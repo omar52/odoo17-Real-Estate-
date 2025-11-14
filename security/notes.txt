@@ -10,8 +10,25 @@ Method3 ---> Presentation Tier (Tree):
 
 
 ######################################################
-Relational Fields-Vid(22)-:
+Relational Fields-Vid(22-23-24)-:
 note from DB Mapping --->  in one2many or many2one ----> the id from one entity be forign key in the many entity
 1-many2one  ===>  many records from one table are related with only one record from other table    (many invoices ---> one client)    ----> new field in first table (many) showing the relation   ==> recorded in database
 2-one2many  ===>   only one record from one table is related with many records from other table    (one invoice   ---> many items)    ----> new field in the second table (many) showing the relation  ===> unique foe each entitity can not be common
 3-many2many ===>   many records from one table is related with many records from other table      (one invoice    ---> many items)     ----> new table is created  ==> recorded in data base with new table ===> can be common for different records
+
+
+######################################################
+How to add an icon to the app in the community Edition vid (26):
+add ==> path ==> 'static/description/icon.png'
+
+how to implement ==>
+     <menuitem
+        id="real_estate_root_menu"
+        name="Real Estate"
+        web_icon="app_one,  static/description/icon.png"
+    />
+
+from Ui====> setting > technical > userinterface > menu item > search for your menu item name and change name and icon as you want
+
+######################################################
+How to edit tree or list view from UI ===> activate debug mode ==> click on debug ===> edit view
