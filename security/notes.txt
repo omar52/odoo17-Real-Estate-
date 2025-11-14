@@ -1,0 +1,13 @@
+Controlling permissions-Vid(21)-:
+Method1 ---> Logic tier:
+    from the security directory==> ir.model.access.csv
+
+Method2 ---> Presentation Tier (Tree):
+    <tree multi_edit="1" create="1" edit="1" delete="1">----> give me the right to edite once i selected a certain record from tree view (multi_edit="1")
+
+Method3 ---> Presentation Tier (Tree):
+    <form create="1" edit="1" delete="1">----> controoling the end-user permissions
+
+
+######################################################
+Relational Fields-Vid(22)-:
