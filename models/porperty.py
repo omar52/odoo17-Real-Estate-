@@ -26,10 +26,19 @@ class Property(models.Model):
         ('west','West'),
     ],default='north')
 
+    # Many2one relation Field
+    # as it is many to one from property ---> naming convention ---> owner_id ,,,,,,if it one to many or many to many---> owner_ids
+    owner_id = fields.Many2one('owner')
+
+    # Many2one relation Field
+    tag_ids = fields.Many2many('tag')
+
+
     # Data Base constrains and validation
     _sql_constraints = [
         ('unique_name','unique("name")','Property name is existed!')
     ]
+
 
     # for only integer values as 0 is already one of them
     @api.constrains('bedrooms')

@@ -1,0 +1,59 @@
+<odoo>
+    <!--  so view is needed for user to execute crud operations -->
+    <!--  Tree View -->
+    <record id="owner_view_tree" model="ir.ui.view">
+        <field name="name">owner tree</field>
+        <field name="model">owner</field>
+        <field name="arch" type="xml">
+            <tree >
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="address"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--  Form View -->
+    <record id="owner_view_form" model="ir.ui.view">
+        <field name="name">owner form</field>
+        <field name="model">owner</field>
+        <field name="arch" type="xml">
+            <form >
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="General Info">
+                            <field name="phone"/>
+                            <field name="address"/>
+
+                        </group>
+                        <group string="Properties">
+                            <field name="property_ids" widget="many2many_tags"/>
+
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    
+    <!--  action is used to execute the crud operations  -->
+    <!--  action used is of type (window action), so when I click on this action it will open a view  -->
+    <record id="owner_action" model="ir.actions.act_window">
+        <field name="name">owner</field>
+        <field name="res_model">owner</field>
+    </record>
+
+    <menuitem
+            id="owner_menu_item"
+            name="Owners"
+            parent="configuration_menu"
+            action="owner_action"
+    />
+</odoo>

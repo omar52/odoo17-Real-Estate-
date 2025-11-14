@@ -1,5 +1,6 @@
 <!-- It is preferable to make the first two levels in the base file-->
 <odoo>
+<!--properties-->
     <menuitem
         id="real_estate_root_menu"
         name="Real Estate"
@@ -9,4 +10,11 @@
         name="Properties"
         parent="real_estate_root_menu"
     />
+<!--    owners-->
+    <menuitem
+        id="configuration_menu"
+        name="Configuration"
+        parent="real_estate_root_menu"
+    />
+
 </odoo>

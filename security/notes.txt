@@ -11,3 +11,7 @@ Method3 ---> Presentation Tier (Tree):
 
 ######################################################
 Relational Fields-Vid(22)-:
+note from DB Mapping --->  in one2many or many2one ----> the id from one entity be forign key in the many entity
+1-many2one  ===>  many records from one table are related with only one record from other table    (many invoices ---> one client)    ----> new field in first table (many) showing the relation   ==> recorded in database
+2-one2many  ===>   only one record from one table is related with many records from other table    (one invoice   ---> many items)    ----> new field in the second table (many) showing the relation  ===> unique foe each entitity can not be common
+3-many2many ===>   many records from one table is related with many records from other table      (one invoice    ---> many items)     ----> new table is created  ==> recorded in data base with new table ===> can be common for different records
