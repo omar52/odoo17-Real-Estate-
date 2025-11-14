@@ -1,0 +1,95 @@
+<odoo>
+    <!--  so view is needed for user to execute crud operations -->
+    <!--  Tree View -->
+    <record id="property_view_tree" model="ir.ui.view">
+        <field name="name">property tree</field>
+        <field name="model">property</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="postcode"/>
+                <field name="date_availability"/>
+                <field name="selling_price"/>
+                <field name="garden"/>
+                <field name="facades"/>
+                <field name="garden_area"/>
+                <field name="bedrooms" optional="1"/>
+                <field name="garage" optional="1"/>
+                <field name="garden_orientation" optional="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--  Form View -->
+    <record id="property_view_form" model="ir.ui.view">
+        <field name="name">property form</field>
+        <field name="model">property</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="General Info">
+                            <field name="date_availability" required="1"/>
+                            <field name="selling_price"/>
+                            <field name="garden"/>
+                            <field name="postcode"/>
+
+                        </group>
+                        <group string="Additional Info">
+                            <field name="facades"/>
+                            <field name="garden_area"/>
+                            <field name="bedrooms"/>
+                            <field name="garage"/>
+                            <field name="garden_orientation"/>
+                        </group>
+                        <group >
+                            <field name="description" required="1"/>
+                            <field name="expected_price"/>
+                            <field name="garage"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--  Search View -->
+    <record id="property_view_search" model="ir.ui.view">
+        <field name="name">property search</field>
+        <field name="model">property</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="postcode"/>
+                <field name="name"/>
+
+
+
+                <filter name="has_garden" string="Has Garden" domain="[('garden','=','True')]"/>
+                <filter name="has_no_garden" string="Has No Garden" domain="[('garden','!=','True')]"/>
+                <filter name="has_garage" string="Has Garage" domain="[('garage','=','True')]"/>
+
+
+                <filter name="group_garden" string="Garden Properties" context="{'group_by':'garden'}"/>
+            </search>
+        </field>
+    </record>
+    <!--  action is used to execute the crud operations  -->
+    <!--  action used is of type (window action), so when I click on this action it will open a view  -->
+    <record id="property_action" model="ir.actions.act_window">
+        <field name="name">Property</field>
+        <field name="res_model">property</field>
+    </record>
+
+    <menuitem
+            id="prpoperty_menu_item"
+            name="Properties"
+            parent="properties_menu"
+            action="property_action"
+    />
+</odoo>
