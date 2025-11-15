@@ -33,6 +33,13 @@ class Property(models.Model):
     # Many2one relation Field
     tag_ids = fields.Many2many('tag')
 
+    # work flow ====> add state to the property
+    state = fields.Selection([
+        ('draft','Draft'),
+        ('pending','Pending'),
+        ('sold','Sold'),
+    ],default='draft')
+
 
     # Data Base constrains and validation
     _sql_constraints = [

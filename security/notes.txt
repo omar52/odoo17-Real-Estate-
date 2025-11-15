@@ -32,3 +32,20 @@ from Ui====> setting > technical > userinterface > menu item > search for your m
 
 ######################################################
 How to edit tree or list view from UI ===> activate debug mode ==> click on debug ===> edit view
+
+
+######################################################
+vid(29)====> add work flow:
+===> model
+    # work flow ====> add state to the property
+    state = fields.Selection([
+        ('draft','Draft'),
+        ('pending','Pending'),
+        ('sold','Sold'),
+    ],default='draft')
+
+===> view
+                <sheet>
+                    <header>
+                            <field name="state" widget="statusbar" statusbar_visible="draft,pending,sold" options="{'clickable':1}"/>
+                    </header>
