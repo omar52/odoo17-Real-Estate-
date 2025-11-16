@@ -120,3 +120,24 @@ vid(30): how to add action button:
                     'type': 'notification'
                 }
             }
+######################
+vid(32): adding custome css:
+1-app ==> static ===> src ==> css ===> model_name.css
+2- add  certain class to the view you want to customize
+           <tree class="header_custom">
+3- add your css properties:
+
+.header_custom  table thead > tr > th {
+    background-color: #7BD3EA !important;
+    color: #ffffff !important;
+    text-align:center !important;
+}
+.header_custom  table thead > tr > th:nth-child(2) {
+    width: 300px;
+}
+
+4- in manifest ===> add a an attribute "assets" ===>
+    'assets':{
+        'web.assets_backend':['app_one/static/src/css/property.css']
+    },
+
