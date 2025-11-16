@@ -49,3 +49,74 @@ vid(29)====> add work flow:
                     <header>
                             <field name="state" widget="statusbar" statusbar_visible="draft,pending,sold" options="{'clickable':1}"/>
                     </header>
+
+vid(30): how to add action button:
+    In logic tier:
+    # add actions buttons
+    def action_draft(self):
+        for rec in self:
+            print('inside draft action')
+            rec.state = 'draft'
+            # rec.write({
+            #     'state':'draft'
+            # })
+
+    def action_pending(self):
+        for rec in self:
+            print('inside pending action')
+            rec.state = 'pending'
+            # rec.write({
+            #     'state':'pending'
+            # })
+
+    def action_sold(self):
+        for rec in self:
+            print('inside sold action')
+            rec.state = 'sold'
+            # rec.write({
+            #     'state':'sold'
+            # })
+
+    In view:
+                         <<div class="btn-group" role="group" aria-label="Basic example">
+                            <!--                        <field name="state" widget="statusbar" statusbar_visible="draft,pending,sold" options="{'clickable':1}"/>-->
+                            <button name="action_draft" type="object" class="btn-primary btn" string="Set To Draft"
+                            invisible="state == 'draft'"/>
+                            <button name="action_pending" type="object" class="btn-secondary btn"
+                                    string="Set To Pending" invisible="state !='draft'"/>
+                            <button name="action_sold" type="object" class="btn-primary btn" string="Set To Sold"
+                            invisible="state != 'pending'"/>
+                        </div>
+
+
+    ###################################
+    Vid(31):decorators ===>
+    1- @api.depends(*args) ====> *args = simple fields  + relational fields ===> any change in *args whether from the ui or db ===> the ecorator will call the method
+    # computed (derived) field ==> is not stored in DB.
+    diff = fields.Float(compute='_compute_diff')
+
+      # can pass all fields in the same model + the realtional field with other models
+    # is a real  record, we can  apply crud operation on it
+    @api.depends('expected_price', 'selling_price', 'owner_id.phone')
+    def _compute_diff(self):
+        for rec in self:
+            print('inside _compute_diff method')
+            rec.diff = rec.expected_price - rec.selling_price
+
+
+
+    2- @api.onchange(*args) ===> *args = simple fields only ===> must be views fields that i can change from the ui (form vieww) and tree if it has multiedit attribute
+    # can pass all fields in the same model only (views fields)
+    # return a pesudo  record, we can not apply crud operation on it we can use dot notation or method called update
+    # application ==> warnining ===> it does not prevent me from recording in DB
+    @api.onchange('expected_price', 'owner_id.phone')
+    def _onchange_expected_price(self):
+        for rec in self:
+            print('inside _onchange_expected_price method')
+            return {
+                'warning': {
+                    'title': 'warning',
+                    'message': 'negative value',
+                    'type': 'notification'
+                }
+            }

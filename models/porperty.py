@@ -1,17 +1,22 @@
 from email.policy import default
 
-from odoo import models,fields,api
+from odoo import models, fields, api
 from odoo.exceptions import ValidationError
+from odoo.tools.populate import compute
 
 
 class Property(models.Model):
     _name = 'property'
-    name = fields.Char(required="1",default='New',size=20)
+    name = fields.Char(required="1", default='New', size=20)
     description = fields.Text()
     postcode = fields.Char(required="1")
     date_availability = fields.Date()
-    expected_price = fields.Float(digits=(0,5))
-    selling_price = fields.Float(digits=(0,5))
+    # expected_price = fields.Float(digits=(0,5))
+    # selling_price = fields.Float(digits=(0,5))
+    expected_price = fields.Float()
+    selling_price = fields.Float()
+    # computed (derived) field ==> is not stored in DB.
+    diff = fields.Float(compute='_compute_diff')
     bedrooms = fields.Integer()
     living_area = fields.Integer()
     facades = fields.Integer()
@@ -20,11 +25,11 @@ class Property(models.Model):
     garden_area = fields.Integer()
     # the first value is what stored in data base, the second one appears to the user
     garden_orientation = fields.Selection([
-        ('north','North'),
-        ('south','South'),
-        ('east','East'),
-        ('west','West'),
-    ],default='north')
+        ('north', 'North'),
+        ('south', 'South'),
+        ('east', 'East'),
+        ('west', 'West'),
+    ], default='north')
 
     # Many2one relation Field
     # as it is many to one from property ---> naming convention ---> owner_id ,,,,,,if it one to many or many to many---> owner_ids
@@ -35,26 +40,84 @@ class Property(models.Model):
 
     # work flow ====> add state to the property
     state = fields.Selection([
-        ('draft','Draft'),
-        ('pending','Pending'),
-        ('sold','Sold'),
-    ],default='draft')
+        ('draft', 'Draft'),
+        ('pending', 'Pending'),
+        ('sold', 'Sold'),
+    ], default='draft')
 
+    ################################################## Start Actions for State #####################################################
+    # add actions buttons
+    def action_draft(self):
+        for rec in self:
+            print('inside draft action')
+            rec.state = 'draft'
+            # rec.write({
+            #     'state':'draft'
+            # })
 
+    def action_pending(self):
+        for rec in self:
+            print('inside pending action')
+            rec.state = 'pending'
+            # rec.write({
+            #     'state':'pending'
+            # })
+
+    def action_sold(self):
+        for rec in self:
+            print('inside sold action')
+            rec.state = 'sold'
+            # rec.write({
+            #     'state':'sold'
+            # })
+
+    ################################################## End Actions for State #####################################################
+
+    ################################################## Start _sql_constraints #####################################################
     # Data Base constrains and validation
     _sql_constraints = [
-        ('unique_name','unique("name")','Property name is existed!')
+        ('unique_name', 'unique("name")', 'Property name is existed!')
     ]
 
+    ################################################## End _sql_constraints #####################################################
 
+    ################################################## Start Decorators #####################################################
+    # can pass all fields in the same model + the realtional field with other models
+    # is a real  record, we can  apply crud operation on it
+    @api.depends('expected_price', 'selling_price', 'owner_id.phone')
+    def _compute_diff(self):
+        for rec in self:
+            print('inside _compute_diff method')
+            rec.diff = rec.expected_price - rec.selling_price
+
+
+    # can pass all fields in the same model only (views fields)
+    # return a pesudo  record, we can not apply crud operation on it we can use dot notation or method called update
+    # application ==> warnining ===> it does not prevent me from recording in DB
+    @api.onchange('expected_price', 'owner_id.phone')
+    def _onchange_expected_price(self):
+        for rec in self:
+            print('inside _onchange_expected_price method')
+            return {
+                'warning': {
+                    'title': 'warning',
+                    'message': 'negative value',
+                    'type': 'notification'
+                }
+            }
+
+    ######Start logic Tier Validation #####################################################
     # for only integer values as 0 is already one of them
     @api.constrains('bedrooms')
     def _check_bedrooms_greater_zero(self):
         for rec in self:
             if rec.bedrooms == 0:
                 raise ValidationError('Please enter valid number of bedrooms')
+    ##### End logic Tier Validation #####################################################
 
+    ################################################## End Decorators #####################################################
 
+    ################################################## start Overrriding functions #####################################################
     # # Overriding create function
     # @api.model_create_multi
     # def create(self,vals):
@@ -85,4 +148,4 @@ class Property(models.Model):
     #     print('inside unlink model')
     #     return res
 
-
+    ################################################## end Overrriding functions #####################################################
