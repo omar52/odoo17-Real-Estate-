@@ -174,5 +174,10 @@ Modularity: features of app needed to our business.
 
 ########################################
 vid(34):Exploring related fields in odoo
+all details in commit
+
+########################################
+Vid(36): Adding Chatter & Tracking Fields   (chatter is existed in a module (mail) so i can inherit)
+
 
 

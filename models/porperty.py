@@ -6,10 +6,16 @@ from odoo.tools.populate import compute
 
 class Property(models.Model):
     _name = 'property'
-    name = fields.Char(required="1", default='New', size=20)
+
+    # Display name to the Property when created, in tracking in chutter
+    _description = 'Property'
+    # odoo support Multiple inheritence to inherit  Chatter, to add tracking of any field i add attr of tracking=1
+    _inherit = ['mail.thread','mail.activity.mixin']
+
+    name = fields.Char(required=1, default='New', size=20)
     description = fields.Text()
-    postcode = fields.Char(required="1")
-    date_availability = fields.Date()
+    postcode = fields.Char(required=1)
+    date_availability = fields.Date(tracking=1)
     # expected_price = fields.Float(digits=(0,5))
     # selling_price = fields.Float(digits=(0,5))
     expected_price = fields.Float()
@@ -49,7 +55,7 @@ class Property(models.Model):
         ('draft', 'Draft'),
         ('pending', 'Pending'),
         ('sold', 'Sold'),
-    ], default='draft')
+    ], default='draft',tracking=1)
 
     ################################################## Start Actions for State #####################################################
     # add actions buttons
