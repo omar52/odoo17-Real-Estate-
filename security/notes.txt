@@ -172,5 +172,7 @@ Modularity: features of app needed to our business.
 
             when i want to install certain modules with my module (created from scratch or customized)  ==> 'depends' key in manifest file
 
+########################################
+vid(34):Exploring related fields in odoo
 
 

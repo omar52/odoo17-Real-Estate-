@@ -14,7 +14,9 @@ class Property(models.Model):
     # selling_price = fields.Float(digits=(0,5))
     expected_price = fields.Float()
     selling_price = fields.Float()
-    # computed (derived) field ==> is not stored in DB.
+
+    # computed (derived) field ==> is not stored in DB automatically.
+    # used generally if i will compute the value before setting it.
     diff = fields.Float(compute='_compute_diff')
     bedrooms = fields.Integer()
     living_area = fields.Integer()
@@ -36,6 +38,11 @@ class Property(models.Model):
 
     # Many2one relation Field
     tag_ids = fields.Many2many('tag')
+
+    #related Fields ===> are not stored in DB Automatically, it needs 'store' attribute ===> store=1
+    # related field type must be the same as the one related to. Char()==Char()
+    owner_address = fields.Char(related='owner_id.address',readonly=0)
+    owner_phone = fields.Char(related='owner_id.phone',readonly=0)
 
     # work flow ====> add state to the property
     state = fields.Selection([
