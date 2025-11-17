@@ -179,5 +179,11 @@ all details in commit
 ########################################
 Vid(36): Adding Chatter & Tracking Fields   (chatter is existed in a module (mail) so i can inherit)
 
+########################################
+Vid(38) adding one@many lines and notebook and Pages Tabs:
+if the lines related to a field in an existed model ==> i will create the class in the parent model
+so propertylines class will be created in the parent.py model (property)
+
+
 
 

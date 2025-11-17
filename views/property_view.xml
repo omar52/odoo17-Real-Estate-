@@ -80,6 +80,17 @@
                         </group>
 
                     </group>
+                    <notebook>
+                        <page string="Bedrooms">
+<!--                            as this field is one2many i can handle the tree view-->
+                            <field name="line_ids">
+                                <tree editable="button">
+                                    <field name="description"/>
+                                    <field name="area"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids"/>

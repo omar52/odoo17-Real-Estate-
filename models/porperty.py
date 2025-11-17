@@ -9,6 +9,7 @@ class Property(models.Model):
 
     # Display name to the Property when created, in tracking in chutter
     _description = 'Property'
+
     # odoo support Multiple inheritence to inherit  Chatter, to add tracking of any field i add attr of tracking=1
     _inherit = ['mail.thread','mail.activity.mixin']
 
@@ -56,6 +57,9 @@ class Property(models.Model):
         ('pending', 'Pending'),
         ('sold', 'Sold'),
     ], default='draft',tracking=1)
+
+
+    line_ids = fields.One2many('property.line','property_id')
 
     ################################################## Start Actions for State #####################################################
     # add actions buttons
@@ -161,3 +165,13 @@ class Property(models.Model):
     #     return res
 
     ################################################## end Overrriding functions #####################################################
+
+
+
+
+class PropertyLine(models.Model):
+    _name = 'property.line'
+
+    area = fields.Float()
+    description = fields.Char()
+    property_id = fields.Many2one('property')
