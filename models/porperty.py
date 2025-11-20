@@ -17,6 +17,9 @@ class Property(models.Model):
     description = fields.Text()
     postcode = fields.Char(required=1)
     date_availability = fields.Date(tracking=1)
+    # Automated action
+    expected_selling_date = fields.Date(tracking=1)
+    is_late = fields.Boolean()
     # expected_price = fields.Float(digits=(0,5))
     # selling_price = fields.Float(digits=(0,5))
     expected_price = fields.Float()
@@ -97,6 +100,13 @@ class Property(models.Model):
             # rec.write({
             #     'state':'sold'
             # })
+    # self has only the property, it does not carry any record which is irreasonable as my logic will be applied on these records
+    def check_expected_selling_date(self):
+        property_id = self.search([])
+        for rec in property_id:
+            if rec.expected_selling_date and rec.expected_selling_date < fields.date.today():
+                if rec.state == 'draft' or rec.state == 'pending':
+                    rec.is_late = True
 
     ################################################## End Actions for State #####################################################
 
