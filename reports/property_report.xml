@@ -1,0 +1,98 @@
+<odoo>
+    <record id="property_report" model="ir.actions.report">
+        <field name="name">Property Report</field>
+        <field name="model">property</field>
+        <field name="report_type">qweb-html</field>
+        <field name="binding_model_id" ref="model_property"/>
+        <!--        show the print button alone in tree views-->
+        <field name="binding_type">report</field>
+        <!--            takes a template_id representing the structure and style of report -->
+        <field name="report_name">app_one.property_report_template</field>
+    </record>
+
+
+    <!--    id must be unique in the app, it can be used for more than report but within the same app-->
+    <template id="property_report_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="o">
+                    <h1>Property Report</h1>
+                    <style>
+                        table{
+                        width:100%;
+                        border:1px solid #b3adad;
+                        border-collapse:collapse;
+                        padding:5px;
+                        }
+                        table th{
+                        border:1px solid #b3adad;
+                        padding:5px;
+                        background:#f0f0f0;
+                        color:#313030
+                        }
+                        table td{
+                        border:1px solid #b3adad;
+                        padding:5px;
+                        text-align:center;
+                        background:#ffffff;
+                        color:#313030;
+                        width:25%
+                        }
+                    </style>
+                    <table>
+                        <thead>
+
+                            <th colspan="4">General Info</th>
+                        </thead>
+                        <tbody>
+                            <td>Name</td>
+                            <td>
+                                <t t-esc='o.name'/>
+                            </td>
+                            <td>Postcode</td>
+                            <td>
+                                <t t-esc='o.postcode'/>
+                            </td>
+                        </tbody>
+                    </table>
+                    <br/>
+                    <table>
+                        <thead>
+
+                            <th colspan="4">Additional Info</th>
+                        </thead>
+                        <tbody>
+                            <td>Owner</td>
+                            <td>
+                                <span t-field='o.owner_id'/>
+                            </td>
+                            <td>Garden Orientation</td>
+                            <td>
+                                <t t-esc='o.garden_orientation'/>
+                            </td>
+                        </tbody>
+                    </table>
+                    <br/>
+                    <table>
+                        <thead>
+                            <th colspan="2">Description</th>
+                            <th colspan="2">Area(m2)</th>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="o.line_ids" t-as='line'>
+                                <tr>
+                                    <td colspan="2">
+                                        <span t-field='line.description'/>
+                                    </td>
+                                    <td colspan="2">
+                                        <t t-esc='line.area'/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
