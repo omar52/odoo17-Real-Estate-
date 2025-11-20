@@ -31,6 +31,8 @@ class Property(models.Model):
     garage = fields.Boolean()
     garden = fields.Boolean()
     garden_area = fields.Integer()
+    active = fields.Boolean(default=True)
+
     # the first value is what stored in data base, the second one appears to the user
     garden_orientation = fields.Selection([
         ('north', 'North'),

@@ -1,0 +1,79 @@
+<odoo>
+    <!--  so view is needed for user to execute crud operations -->
+    <!--  Tree View -->
+    <record id="building_view_tree" model="ir.ui.view">
+        <field name="name">building tree</field>
+        <field name="model">building</field>
+        <field name="arch" type="xml">
+            <tree class="header_custom">
+                <field name="name"/>
+                <field name="no"/>
+                <field name="code"/>
+                <field name="description"/>
+                <field name="active"/>
+
+            </tree>
+        </field>
+    </record>
+
+    <!--  Form View -->
+    <record id="building_view_form" model="ir.ui.view">
+        <field name="name">building form</field>
+        <field name="model">building</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group string="General Info">
+                            <field name="name"/>
+
+                            <field name="no"/>
+                        </group>
+                        <group string="Additional Info">
+                            <field name="code"/>
+                        </group>
+                        <group string="About The Building">
+                            <field name="description"/>
+                            <field name="active"/>
+
+                        </group>
+                    </group>
+
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!--  Search View -->
+    <record id="building_view_search" model="ir.ui.view">
+        <field name="name">building search</field>
+        <field name="model">building</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="no"/>
+                <field name="code"/>
+            </search>
+        </field>
+    </record>
+
+
+    <!--  action is used to execute the crud operations  -->
+    <!--  action used is of type (window action), so when I click on this action it will open a view  -->
+    <record id="building_action" model="ir.actions.act_window">
+        <field name="name">Building</field>
+        <field name="res_model">building</field>
+    </record>
+
+    <menuitem
+            id="building_menu_item"
+            name="Buildings"
+            parent="properties_menu"
+            action="building_action"
+    />
+</odoo>
