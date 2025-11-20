@@ -58,6 +58,7 @@ class Property(models.Model):
         ('draft', 'Draft'),
         ('pending', 'Pending'),
         ('sold', 'Sold'),
+        ('closed', 'Closed'),
     ], default='draft',tracking=1)
 
 
@@ -85,6 +86,14 @@ class Property(models.Model):
         for rec in self:
             print('inside sold action')
             rec.state = 'sold'
+            # rec.write({
+            #     'state':'sold'
+            # })
+
+    def action_colsed(self):
+        for rec in self:
+            print('inside closed action')
+            rec.state = 'closed'
             # rec.write({
             #     'state':'sold'
             # })

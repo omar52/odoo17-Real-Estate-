@@ -185,5 +185,19 @@ if the lines related to a field in an existed model ==> i will create the class 
 so propertylines class will be created in the parent.py model (property)
 
 
+########################################
+Types of actions:
+1-window actions ===>       model = 'ir.actions.act_window'
+2-server actions ===>       model = 'ir.actions.server' ===> dublicate - delete - archive buttons in tree or form view
+3-Report actions ===>       model = 'ir.actions.report' ===> print pdf it need web kit html to pdf
+4-Automated actions ===>    model = 'ir.corn'
+5-Url Actions ===>          model = 'ir.actions.act_url'
+6-CLient actions ==>        model = 'ir.actions.client'
+
+#######################################
+Server Actions:
+
+
+
 
 

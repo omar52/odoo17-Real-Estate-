@@ -42,7 +42,7 @@
                             <button name="action_sold" type="object" class="btn-primary btn" string="Set To Sold"
                                     invisible="state != 'pending'"/>
                         </div>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,pending,sold"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,pending,sold,closed"/>
                     </header>
                     <div class="oe_title">
                         <label for="name"/>
@@ -120,12 +120,27 @@
             </search>
         </field>
     </record>
+
     <!--  action is used to execute the crud operations  -->
     <!--  action used is of type (window action), so when I click on this action it will open a view  -->
+    <!--    windows action -->
     <record id="property_action" model="ir.actions.act_window">
         <field name="name">Property</field>
         <field name="res_model">property</field>
     </record>
+
+    <!--    server actions-->
+    <record id="property_closed_server_action" model="ir.actions.server">
+        <field name="name">Closed</field>
+        <field name="model_id" ref="model_property"/>
+        <field name="binding_model_id" ref="model_property"/>
+        <!--  will execute python code  -->
+        <field name="state">code</field>
+        <field name="code">
+            action = records.action_colsed()
+        </field>
+    </record>
+
 
     <menuitem
             id="prpoperty_menu_item"
