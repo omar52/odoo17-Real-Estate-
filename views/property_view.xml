@@ -42,7 +42,7 @@
                             <button name="action" type="object" class="btn-primary btn" string="Action"/>
 
                             <button name="action_draft" type="object" class="btn-primary btn" string="Set To Draft"
-                                    invisible="state == 'draft'"/>
+                                    invisible="state in ('draft','closed')"/>
                             <button name="action_pending" type="object" class="btn-primary btn"
                                     string="Set To Pending" invisible="state !='draft'"/>
                             <button name="action_sold" type="object" class="btn-primary btn" string="Set To Sold"
@@ -62,40 +62,40 @@
                     </div>
                     <group>
                         <group string="General Info">
-                            <field name="date_availability" required="1"/>
-                            <field name="expected_selling_date" />
-                            <field name="is_late" invisible="1"/>
-                            <field name="selling_price"/>
-                            <field name="expected_price"/>
-                            <field name="diff"/>
-                            <field name="postcode"/>
-                            <field name="tag_ids" widget="many2many_tags"/>
-                            <field name="active"/>
+                            <field name="date_availability" required="1" readonly="state == 'closed'"/>
+                            <field name="expected_selling_date" readonly="state == 'closed'"/>
+                            <field name="is_late" invisible="1"  readonly="state == 'closed'"/>
+                            <field name="selling_price" readonly="state == 'closed'"/>
+                            <field name="expected_price" readonly="state == 'closed'"/>
+                            <field name="diff" readonly="state == 'closed'"/>
+                            <field name="postcode" readonly="state == 'closed'"/>
+                            <field name="tag_ids" widget="many2many_tags" readonly="state == 'closed'"/>
+                            <field name="active" readonly="state == 'closed'"/>
 
 
                         </group>
                         <group string="Additional Info">
-                            <field name="facades"/>
-                            <field name="garden_area"/>
-                            <field name="bedrooms"/>
-                            <field name="garage"/>
-                            <field name="garden_orientation"/>
+                            <field name="facades" readonly="state == 'closed'"/>
+                            <field name="garden_area" readonly="state == 'closed'"/>
+                            <field name="bedrooms" readonly="state == 'closed'"/>
+                            <field name="garage" readonly="state == 'closed'"/>
+                            <field name="garden_orientation" readonly="state == 'closed'"/>
                         </group>
                         <group string="Owner Infos">
 
-                            <field name="owner_id"/>
-                            <field name="owner_address"/>
-                            <field name="owner_phone"/>
+                            <field name="owner_id" readonly="state == 'closed'"/>
+                            <field name="owner_address" readonly="state == 'closed'"/>
+                            <field name="owner_phone" readonly="state == 'closed'"/>
                         </group>
                         <group string="Complemenatory Infos">
-                            <field name="description" required="1"/>
+                            <field name="description" required="1" readonly="state == 'closed'"/>
                         </group>
 
                     </group>
                     <notebook>
                         <page string="Bedrooms">
                             <!--                            as this field is One2many i can handle the tree view-->
-                            <field name="line_ids">
+                            <field name="line_ids" readonly="state == 'closed'">
                                 <tree editable="button">
                                     <field name="description"/>
                                     <field name="area"/>
