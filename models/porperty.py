@@ -13,6 +13,7 @@ class Property(models.Model):
     # odoo support Multiple inheritence to inherit  Chatter, to add tracking of any field i add attr of tracking=1
     _inherit = ['mail.thread','mail.activity.mixin']
 
+    ref = fields.Char(default='New', readonly=1)
     name = fields.Char(required=1, default='New', size=20)
     description = fields.Text()
     postcode = fields.Char(required=1)
@@ -122,6 +123,7 @@ class Property(models.Model):
         #     'phone':'01000101001'
         # }))            #create an instance (record of the model)
         # print(self.env['owner'].search([])) # Search for
+        ...
 
 
 
@@ -172,13 +174,18 @@ class Property(models.Model):
     ################################################## End Decorators #####################################################
 
     ################################################## start Overrriding functions #####################################################
-    # # Overriding create function
+    # # Overriding create function ==> to handle the sequence Vid(50)
     # @api.model_create_multi
-    # def create(self,vals):
-    #     res = super(Property,self).create(vals)
-    #     # logic
-    #     print('inside create function')
-    #     return res
+    @api.model
+    def create(self,vals):
+        res = super(Property,self).create(vals)
+        # logic
+        if res.ref =='New':
+            print('condtion is working')
+            res.ref = self.env['ir.sequence'].next_by_code('property_seq')
+            # print('inside create function')
+        return res
+
 
     # Overriding research function
     # @api.model
@@ -201,6 +208,8 @@ class Property(models.Model):
     #     # logic
     #     print('inside unlink model')
     #     return res
+
+
 
     ################################################## end Overrriding functions #####################################################
 

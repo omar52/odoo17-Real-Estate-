@@ -8,14 +8,16 @@
         # order is very important
         #1- security
         'security/ir.model.access.csv',
-        #2- views
+        #2- data
+        'data/sequence.xml',
+        #3- views
         'views/base_menu.xml',
         'views/property_view.xml',
         'views/owner_view.xml',
         'views/tag_view.xml',
         'views/sale_order_view.xml',
         'views/buidling_view.xml',
-        #3-Templates:
+        #4-Templates:
         'reports/property_report.xml',
     ],
     'assets':{
