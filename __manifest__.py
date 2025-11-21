@@ -17,6 +17,7 @@
         'views/tag_view.xml',
         'views/sale_order_view.xml',
         'views/buidling_view.xml',
+        'views/property_history_view.xml',
         #4-Templates:
         'reports/property_report.xml',
     ],
