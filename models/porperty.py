@@ -108,6 +108,23 @@ class Property(models.Model):
                 if rec.state == 'draft' or rec.state == 'pending':
                     rec.is_late = True
 
+
+    # Env can be used to catch user Data & company & context & cursor & [model====> most important call to any method in side the model]
+    def action(self):
+        # print(self.env.user)          #Return  Record of user-- any field can ce accessed by dot notation
+        # print(self.env.uid)           #Return id of user
+        # print(self.env.company.name)  #Return company of user -- any field can be accessed by dot notation
+        # print(self.env.context)       #Return context
+        # print(self.env.cr)            #Return Cursor
+        # print(self.env['owner'])        # Return model name
+        # print(self.env['owner'].create({
+        #     'name': 'Ahmed Ezzat',
+        #     'phone':'01000101001'
+        # }))            #create an instance (record of the model)
+        # print(self.env['owner'].search([])) # Search for
+
+
+
     ################################################## End Actions for State #####################################################
 
     ################################################## Start _sql_constraints #####################################################
