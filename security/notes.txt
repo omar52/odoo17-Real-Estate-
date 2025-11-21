@@ -195,7 +195,10 @@ Types of actions:
 6-CLient actions ==>        model = 'ir.actions.client'
 
 #######################################
-Server Actions:
+Transient model ===> is attached to the wizard
+after a certain period its data is deleted.
+
+BP ==> create new diretory to the wizard and transient model and pop up window views
 
 
 

@@ -175,17 +175,27 @@ class Property(models.Model):
 
     ################################################## End Decorators #####################################################
 
-    ############################### creating records in other model ######################
-    def create_history_record(self, old_state, new_state):
+    ############################### Start creating records in other model ######################
+    def create_history_record(self, old_state, new_state , reason):
         for rec in self:
             rec.env['property.history'].create({
                 'user_id': rec.env.uid,
                 'property_id': rec.id,
                 'old_state': old_state,
                 'new_state': new_state,
+                'reason': reason or '',
+
             })
 
-    ############################### creating records in other model ######################
+    ############################### End creating records in other model ######################
+
+    ############################### start Creating action for wizard ######################
+    def action_open_change_state_wizard(self):
+        action = self.env['ir.actions.actions']._for_xml_id('app_one.change_state_wizard_action')
+        action['context'] = {'default_property_id': self.id}
+        return action
+
+    ############################### end Creating action for wizard ######################
 
     ################################################## start Overrriding functions #####################################################
     # # Overriding create function ==> to handle the sequence Vid(50)
