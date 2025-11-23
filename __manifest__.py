@@ -7,6 +7,7 @@
     'data': [  # path within the application
         # order is very important
         # 1- security
+        'security/security.xml',
         'security/ir.model.access.csv',
         # 2- data
         'data/sequence.xml',

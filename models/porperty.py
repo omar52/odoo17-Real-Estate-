@@ -33,7 +33,7 @@ class Property(models.Model):
     bedrooms = fields.Integer()
     living_area = fields.Integer()
     facades = fields.Integer()
-    garage = fields.Boolean()
+    garage = fields.Boolean(groups="app_one.property_manager_group")
     garden = fields.Boolean()
     garden_area = fields.Integer()
     active = fields.Boolean(default=True)

@@ -91,7 +91,7 @@
                             <field name="owner_phone" readonly="state == 'closed'"/>
                         </group>
                         <group string="Complemenatory Infos">
-                            <field name="description" required="1" readonly="state == 'closed'"/>
+                            <field name="description" required="1" readonly="state == 'closed'" groups="app_one.property_manager_group"/>
                         </group>
 
                     </group>
