@@ -121,6 +121,14 @@ class Property(models.Model):
 
     # Env can be used to catch user Data & company & context & cursor & [model====> most important call to any method in side the model]
     def action(self):
+        # print(self.env['property'].search([('name','=','Property 1')])) # Search for
+        # print(self.env['property'].search([('name','!=','Property 1')])) # Search for
+        # print(self.env['property'].search([('name','like','Propert')])) # Search for
+        # print(self.env['property'].search([('name','ilike','propert')])) # Search for
+        # print(self.env['property'].search([('name','like','Property'),('postcode','=','asc123')])) # Search for record acheieving both condtions
+        print(self.env['property'].search(['|',('name','like','Property 20'),('postcode','=','asc123')])) # Search for record acheieving on of two condtions
+
+
         # print(self.env.user)          #Return  Record of user-- any field can ce accessed by dot notation
         # print(self.env.uid)           #Return id of user
         # print(self.env.company.name)  #Return company of user -- any field can be accessed by dot notation
