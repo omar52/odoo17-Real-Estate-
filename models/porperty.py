@@ -1,3 +1,4 @@
+from datetime import timedelta
 from email.policy import default
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
@@ -56,6 +57,10 @@ class Property(models.Model):
     # related field type must be the same as the one related to. Char()==Char()
     owner_address = fields.Char(related='owner_id.address', readonly=0)
     owner_phone = fields.Char(related='owner_id.phone', readonly=0)
+
+    # create field to add the time created
+    create_time = fields.Datetime(default=fields.Datetime.now())
+    next_time = fields.Datetime(compute='_compute_time_after_six_hours')
 
     # work flow ====> add state to the property
     state = fields.Selection([
@@ -146,12 +151,21 @@ class Property(models.Model):
     def _compute_diff(self):
         for rec in self:
             print('inside _compute_diff method')
-            rec.diff = rec.expected_price - rec.selling_price
+            rec.diff = (rec.expected_price - rec.selling_price)
+
+    @api.depends('create_time')
+    def _compute_time_after_six_hours(self):
+        for rec in self:
+            if rec.create_time:
+                print('inside _compute_diff method')
+                rec.next_time = rec.create_time + timedelta(hours=6)
+            else:
+                rec.next_time = False
 
     # can pass all fields in the same model only (views fields)
     # return a pesudo  record, we can not apply crud operation on it we can use dot notation or method called update
     # application ==> warnining ===> it does not prevent me from recording in DB
-    @api.onchange('expected_price', 'owner_id.phone')
+    @api.onchange('crea', 'owner_id.phone')
     def _onchange_expected_price(self):
         for rec in self:
             print('inside _onchange_expected_price method')
