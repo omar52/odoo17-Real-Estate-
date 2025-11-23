@@ -176,7 +176,7 @@ class Property(models.Model):
     ################################################## End Decorators #####################################################
 
     ############################### Start creating records in other model ######################
-    def create_history_record(self, old_state, new_state , reason):
+    def create_history_record(self, old_state, new_state, reason=''):
         for rec in self:
             rec.env['property.history'].create({
                 'user_id': rec.env.uid,
@@ -184,60 +184,64 @@ class Property(models.Model):
                 'old_state': old_state,
                 'new_state': new_state,
                 'reason': reason or '',
-
+                # as i have no recorded redcords in property.hitory.line model , so i need to first create lines,
+                # i use magic table containing three items :
+                # 1st = 0 as we create the record in the history model
+                # 2nd = 0 as the records are not existed
+                # 3rd = dictionary
+                'line_ids': [(0, 0, {'description': line.description, 'area': line.area}) for line in rec.line_ids],
             })
 
-    ############################### End creating records in other model ######################
+        ############################### End creating records in other model ######################
 
-    ############################### start Creating action for wizard ######################
+        ############################### start Creating action for wizard ######################
     def action_open_change_state_wizard(self):
         action = self.env['ir.actions.actions']._for_xml_id('app_one.change_state_wizard_action')
         action['context'] = {'default_property_id': self.id}
         return action
 
-    ############################### end Creating action for wizard ######################
+        ############################### end Creating action for wizard ######################
 
-    ################################################## start Overrriding functions #####################################################
-    # # Overriding create function ==> to handle the sequence Vid(50)
-    # @api.model_create_multi
-    @api.model
-    def create(self, vals):
-        res = super(Property, self).create(vals)
-        # logic
-        if res.ref == 'New':
-            print('condtion is working')
-            res.ref = self.env['ir.sequence'].next_by_code('property_seq')
-            # print('inside create function')
-        return res
+        ################################################## start Overrriding functions #####################################################
+        # # Overriding create function ==> to handle the sequence Vid(50)
+        # @api.model_create_multi
+        @api.model
+        def create(self, vals):
+            res = super(Property, self).create(vals)
+            # logic
+            if res.ref == 'New':
+                print('condtion is working')
+                res.ref = self.env['ir.sequence'].next_by_code('property_seq')
+                # print('inside create function')
+            return res
 
-    # Overriding research function
-    # @api.model
-    # def _search(self, domain, offset=0, limit=None, order=None, access_rights_uid=None):
-    #     res = super(Property,self)._search(domain, offset=0, limit=None, order=None, access_rights_uid=None)
-    #     # logic
-    #     print('inside search function')
-    #     return res
+        # Overriding research function
+        # @api.model
+        # def _search(self, domain, offset=0, limit=None, order=None, access_rights_uid=None):
+        #     res = super(Property,self)._search(domain, offset=0, limit=None, order=None, access_rights_uid=None)
+        #     # logic
+        #     print('inside search function')
+        #     return res
 
-    # # Overriding write function
-    # def write(self, vals):
-    #     res = super(Property,self).write(vals)
-    #     # logic
-    #     print('inside write model')
-    #     return res
+        # # Overriding write function
+        # def write(self, vals):
+        #     res = super(Property,self).write(vals)
+        #     # logic
+        #     print('inside write model')
+        #     return res
 
-    # #Overriding delete function
-    # def unlink(self):
-    #     res = super(Property,self).unlink()
-    #     # logic
-    #     print('inside unlink model')
-    #     return res
+        # #Overriding delete function
+        # def unlink(self):
+        #     res = super(Property,self).unlink()
+        #     # logic
+        #     print('inside unlink model')
+        #     return res
 
-    ################################################## end Overrriding functions #####################################################
+        ################################################## end Overrriding functions #####################################################
 
+    class PropertyLine(models.Model):
+        _name = 'property.line'
 
-class PropertyLine(models.Model):
-    _name = 'property.line'
-
-    area = fields.Float()
-    description = fields.Char()
-    property_id = fields.Many2one('property')
+        area = fields.Float()
+        description = fields.Char()
+        property_id = fields.Many2one('property')
