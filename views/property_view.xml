@@ -63,8 +63,8 @@
                     <group>
                         <group string="General Info">
 
-                            <field name="create_time" required="1" readonly="1"/>
-                            <field name="next_time" required="1" readonly="1"/>
+                            <field name="create_time" readonly="1"/>
+                            <field name="next_time"  readonly="1"/>
                             <field name="date_availability" required="1" readonly="state == 'closed'"/>
                             <field name="expected_selling_date" readonly="state == 'closed'"/>
                             <field name="is_late" invisible="1"  readonly="state == 'closed'"/>
