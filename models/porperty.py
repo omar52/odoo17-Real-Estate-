@@ -119,6 +119,16 @@ class Property(models.Model):
                 if rec.state == 'draft' or rec.state == 'pending':
                     rec.is_late = True
 
+    # action for smart button
+    def action_open_related_owner(self):
+        action = self.env['ir.actions.actions']._for_xml_id('app_one.owner_action')
+        view_id = self.env.ref('app_one.owner_view_form').id
+        action['res_id'] = self.owner_id.id
+        action['views'] = [[view_id,'form']]
+        return action
+
+
+
     # Env can be used to catch user Data & company & context & cursor & [model====> most important call to any method in side the model]
     def action(self):
         # print(self.env['property'].search([('name','=','Property 1')])) # Search for

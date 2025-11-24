@@ -36,6 +36,9 @@
         <field name="arch" type="xml">
             <form>
                 <sheet>
+                    <div name="button_box" class="oe_button_box">
+                        <button name="action_open_related_owner" type="object" icon="fa-user" invisible="not owner_id" string="Owner Details"/>
+                    </div>
                     <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
                     <widget name="web_ribbon" title="Sold" bg_color="text-bg-success" invisible="state != 'sold'"/>
                     <header>
@@ -66,10 +69,10 @@
                         <group string="General Info">
 
                             <field name="create_time" readonly="1"/>
-                            <field name="next_time"  readonly="1"/>
+                            <field name="next_time" readonly="1"/>
                             <field name="date_availability" required="1" readonly="state == 'closed'"/>
                             <field name="expected_selling_date" readonly="state == 'closed'"/>
-                            <field name="is_late" invisible="1"  readonly="state == 'closed'"/>
+                            <field name="is_late" invisible="1" readonly="state == 'closed'"/>
                             <field name="selling_price" readonly="state == 'closed'"/>
                             <field name="expected_price" readonly="state == 'closed'"/>
                             <field name="diff" readonly="state == 'closed'"/>
@@ -93,7 +96,8 @@
                             <field name="owner_phone" readonly="state == 'closed'"/>
                         </group>
                         <group string="Complemenatory Infos">
-                            <field name="description" required="1" readonly="state == 'closed'" groups="app_one.property_manager_group"/>
+                            <field name="description" required="1" readonly="state == 'closed'"
+                                   groups="app_one.property_manager_group"/>
                         </group>
 
                     </group>
