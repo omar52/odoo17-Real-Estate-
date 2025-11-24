@@ -36,6 +36,8 @@
         <field name="arch" type="xml">
             <form>
                 <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <widget name="web_ribbon" title="Sold" bg_color="text-bg-success" invisible="state != 'sold'"/>
                     <header>
                         <div class="btn-group" role="group" aria-label="Basic example">
                             <!--                        <field name="state" widget="statusbar" statusbar_visible="draft,pending,sold" options="{'clickable':1}"/>-->
