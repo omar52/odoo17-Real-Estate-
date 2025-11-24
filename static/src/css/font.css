@@ -1,0 +1,12 @@
+@font-face{
+    font-family:'ScienceGothic';
+    src:url(app_one/static/src/fonts/ScienceGothic-Bold.ttf)
+}
+@font-face{
+    font-family:'ScienceGothic_UltraExpanded-Thin';
+    src:url(app_one/static/src/fonts/ScienceGothic_UltraExpanded-Thin.ttf)
+}
+@font-face{
+    font-family:'ScienceGothic_ExtraExpanded';
+    src:url(app_one/static/src/fonts/ScienceGothic_ExtraExpanded-Thin.ttf)
+}

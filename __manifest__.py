@@ -26,7 +26,8 @@
         'reports/property_report.xml',
     ],
     'assets': {
-        'web.assets_backend': ['app_one/static/src/css/property.css']
+        'web.assets_backend': ['app_one/static/src/css/property.css'],
+        'web.report_assets_common': ['app_one/static/src/css/font.css'],
     },
     'application': True,
     'installable': True,
