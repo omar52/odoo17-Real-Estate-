@@ -3,7 +3,7 @@
     'author': "Omar Abdelkarim",
     'category': '',
     'version': '17.0.0.1.0',
-    'depends': ['base', 'sale', 'account', 'mail'],
+    'depends': ['base', 'sale', 'account', 'mail', 'contacts'],
     'data': [  # path within the application
         # order is very important
         # 1- security
@@ -19,6 +19,7 @@
         'views/sale_order_view.xml',
         'views/buidling_view.xml',
         'views/property_history_view.xml',
+        'views/account_move_view.xml',
         # 4-Templates:
         'wizard/change_state_wizard_view.xml',
         # 5-Templates:
