@@ -3,8 +3,23 @@ from urllib.parse import parse_qs
 
 from odoo import http
 from odoo.http import request
-from .property_crud_validator import check_existence_of_the_record, check_existence_of_the_name, \
-    check_existence_of_the_records
+
+
+
+def valid_response(data, status):
+    response_body = {
+        'message': 'successful',
+        'data': data,
+    }
+    return request.make_json_response(response_body, status=status)
+
+
+def invalid_response(error, status):
+    response_body = {
+        'message': 'Failed',
+        'error': error,
+    }
+    return request.make_json_response(response_body, status=status)
 
 
 class PropertyApi(http.Controller):
@@ -17,9 +32,8 @@ class PropertyApi(http.Controller):
         # print(vals)
 
         # validate:
-        error = check_existence_of_the_name(vals.get('name'))
-        if error:
-            return error
+        if not vals.get('name'):
+            return invalid_response("Property name is required!!", status=400)
         else:
 
             # handling any error from creation operation using try except
@@ -37,9 +51,7 @@ class PropertyApi(http.Controller):
                         "name": res.name,
                     }, status=201)
             except Exception as error:
-                return request.make_json_response({
-                    "message": error,
-                }, status=400)
+                return invalid_response(error, status=400)
 
     # post using json ==> 3rd party application should use only json formate data sending with the request.
     @http.route("/v1/property/json", methods=["POST"], type="json", auth='none', csrf=False)
@@ -67,9 +79,8 @@ class PropertyApi(http.Controller):
 
         try:
             property_id = request.env['property'].sudo().search([('id', '=', property_id)])
-            error = check_existence_of_the_record(property_id)
-            if error:
-                return error
+            if not property_id:
+                return invalid_response("ID is not existed")
             else:
                 args = request.httprequest.data.decode()  # get json data
                 vals = json.loads(args)  # convert json data to dictionary
@@ -81,21 +92,17 @@ class PropertyApi(http.Controller):
                 }, status=201)
 
         except Exception as error:
-            return request.make_json_response({
-                "message": error,
-            }, status=400)
+            return invalid_response(error, status=400)
 
     # Get / Read
     @http.route("/v1/property/<int:property_id>", methods=["GET"], type="http", auth='none', csrf=False)
     def get_property(self, property_id):
         try:
             property_id = request.env['property'].sudo().search([('id', '=', property_id)])
-            error = check_existence_of_the_record(property_id)
-            if error:
-                return error
+            if not property_id:
+                return invalid_response('ID does not exist!', status=400)
             else:
-                return request.make_json_response({
-                    "message": "property is",
+                return valid_response({
                     "id": property_id.id,
                     "name": property_id.name,
                     "postcode": property_id.postcode,
@@ -111,18 +118,16 @@ class PropertyApi(http.Controller):
     def delete_property(self, property_id):
         try:
             property_id = request.env['property'].sudo().search([('id', '=', property_id)])
-            error = check_existence_of_the_record(property_id)
-            if error:
-                return error
+            if not property_id:
+                return invalid_response("Id is not Existed", status=400)
+
             else:
                 property_id.unlink()
                 return request.make_json_response({
                     "message": "Property Has been Deleted Successfully"
                 })
         except Exception as error:
-            return request.make_json_response({
-                "message": error
-            })
+            return invalid_response(error, status=400)
 
     # Get all records
     @http.route("/v1/properties", methods=["GET"], type="http", auth='none', csrf=False)
@@ -134,11 +139,11 @@ class PropertyApi(http.Controller):
             if params.get('state'):
                 property_domain += [("state", "=", params.get('state')[0])]
                 property_ids = request.env['property'].sudo().search(property_domain)
-                error = check_existence_of_the_records(property_ids)
-                if error:
-                    return error
+                if not property_ids:
+                    return invalid_response(f"There are no records with the entered state = {params.get('state')[0]}",status=400)
+
                 else:
-                    return request.make_json_response([{
+                    return valid_response([{
                         "id": property.id,
                         "name": property.name,
                         "postcode": property.postcode,
@@ -146,18 +151,16 @@ class PropertyApi(http.Controller):
                     } for property in property_ids], status=201)
             else:
                 property_ids = request.env['property'].sudo().search([])
-                error = check_existence_of_the_records(property_ids)
-                if error:
-                    return error
+                if not property_ids:
+                    return invalid_response(f"There are no records in this table")
+
                 else:
-                    return request.make_json_response([{
-                        "id": property.id,
-                        "name": property.name,
-                        "postcode": property.postcode,
-                        "bedrooms": property.bedrooms,
-                    } for property in property_ids], status=201)
+                    return valid_response([{
+                        "id": property_id.id,
+                        "name": property_id.name,
+                        "postcode": property_id.postcode,
+                        "bedrooms": property_id.bedrooms,
+                    } for property_id in property_ids], status=201)
 
         except Exception as error:
-            return request.make_json_response({
-                "message": error
-            })
+            return invalid_response(error,status=400)
