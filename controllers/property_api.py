@@ -1,8 +1,10 @@
 import json
+from urllib.parse import parse_qs
+
 from odoo import http
 from odoo.http import request
-from .property_creation_validator import check_existence_of_the_name
-from .property_update_validator import check_existence_of_the_record
+from .property_crud_validator import check_existence_of_the_record, check_existence_of_the_name, \
+    check_existence_of_the_records
 
 
 class PropertyApi(http.Controller):
@@ -117,6 +119,44 @@ class PropertyApi(http.Controller):
                 return request.make_json_response({
                     "message": "Property Has been Deleted Successfully"
                 })
+        except Exception as error:
+            return request.make_json_response({
+                "message": error
+            })
+
+    # Get all records
+    @http.route("/v1/properties", methods=["GET"], type="http", auth='none', csrf=False)
+    def get_all_property(self):
+        try:
+            # recieving params
+            params = parse_qs(request.httprequest.query_string.decode('utf-8'))
+            property_domain = []
+            if params.get('state'):
+                property_domain += [("state", "=", params.get('state')[0])]
+                property_ids = request.env['property'].sudo().search(property_domain)
+                error = check_existence_of_the_records(property_ids)
+                if error:
+                    return error
+                else:
+                    return request.make_json_response([{
+                        "id": property.id,
+                        "name": property.name,
+                        "postcode": property.postcode,
+                        "bedrooms": property.bedrooms,
+                    } for property in property_ids], status=201)
+            else:
+                property_ids = request.env['property'].sudo().search([])
+                error = check_existence_of_the_records(property_ids)
+                if error:
+                    return error
+                else:
+                    return request.make_json_response([{
+                        "id": property.id,
+                        "name": property.name,
+                        "postcode": property.postcode,
+                        "bedrooms": property.bedrooms,
+                    } for property in property_ids], status=201)
+
         except Exception as error:
             return request.make_json_response({
                 "message": error
