@@ -2,7 +2,7 @@ import json
 from odoo import http
 from odoo.http import request
 from .property_creation_validator import check_existence_of_the_name
-from .property_update_validator import   check_existence_of_the_record
+from .property_update_validator import check_existence_of_the_record
 
 
 class PropertyApi(http.Controller):
@@ -62,8 +62,8 @@ class PropertyApi(http.Controller):
     # it is allowed to send the id in the url
     @http.route("/v1/property/<int:property_id>", methods=["PUT"], type="http", auth='none', csrf=False)
     def update_property(self, property_id):
-        try:
 
+        try:
             property_id = request.env['property'].sudo().search([('id', '=', property_id)])
             error = check_existence_of_the_record(property_id)
             if error:
@@ -83,3 +83,23 @@ class PropertyApi(http.Controller):
                 "message": error,
             }, status=400)
 
+    # Get / Read
+    @http.route("/v1/property/<int:property_id>", methods=["GET"], type="http", auth='none', csrf=False)
+    def get_property(self, property_id):
+        try:
+            property_id = request.env['property'].sudo().search([('id', '=', property_id)])
+            error = check_existence_of_the_record(property_id)
+            if error:
+                return error
+            else:
+                return request.make_json_response({
+                    "message": "property is",
+                    "id": property_id.id,
+                    "name": property_id.name,
+                    "postcode": property_id.postcode,
+                    "bedrooms": property_id.bedrooms,
+                }, status=201)
+        except Exception as error:
+            return request.make_json_response({
+                "message": error
+            })
