@@ -1,12 +1,11 @@
 import json
 from odoo import http
 from odoo.http import request
-from .property_validator import check_existence_of_the_name
+from .property_creation_validator import check_existence_of_the_name
+from .property_update_validator import   check_existence_of_the_record
 
 
 class PropertyApi(http.Controller):
-
-
 
     @http.route("/v1/property", methods=["POST"], type="http", auth='none', csrf=False)
     def post_property(self):
@@ -58,3 +57,29 @@ class PropertyApi(http.Controller):
                 "message": "property has been created successfully from json "
             }]
         return None
+
+    # update / write methos
+    # it is allowed to send the id in the url
+    @http.route("/v1/property/<int:property_id>", methods=["PUT"], type="http", auth='none', csrf=False)
+    def update_property(self, property_id):
+        try:
+
+            property_id = request.env['property'].sudo().search([('id', '=', property_id)])
+            error = check_existence_of_the_record(property_id)
+            if error:
+                return error
+            else:
+                args = request.httprequest.data.decode()  # get json data
+                vals = json.loads(args)  # convert json data to dictionary
+                property_id.write(vals)
+                return request.make_json_response({
+                    "message": "property has been updated successfully",
+                    "id": property_id.id,
+                    "name": property_id.name,
+                }, status=201)
+
+        except Exception as error:
+            return request.make_json_response({
+                "message": error,
+            }, status=400)
+
