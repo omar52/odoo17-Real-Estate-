@@ -3,6 +3,7 @@ from email.policy import default
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 from odoo.tools.populate import compute
+import requests
 
 
 class Property(models.Model):
@@ -168,7 +169,7 @@ class Property(models.Model):
     @api.depends('expected_price', 'selling_price', 'owner_id.phone')
     def _compute_diff(self):
         for rec in self:
-            print('inside _compute_diff method')
+            # print('inside _compute_diff method')
             rec.diff = (rec.expected_price - rec.selling_price)
 
     @api.depends('create_time')
@@ -268,6 +269,21 @@ class Property(models.Model):
         #     # logic
         #     print('inside unlink model')
         #     return res
+
+# Api integration
+    def get_properties(self):
+        try:
+            payload=dict()
+            response = requests.get('http://localhost:8069/v1/properties',data=payload)
+            if response.status_code ==200:
+                print('succesful')
+                print(response.content)  # return json
+                print(response.json())  # return json
+                print(response.status_code)  # return response status code
+            else:
+                print('Failed')
+        except Exception as error:
+            raise ValidationError(str(error))
 
         ################################################## end Overrriding functions #####################################################
 

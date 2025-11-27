@@ -8,13 +8,13 @@ from odoo import http
 from odoo.http import request
 
 
-def valid_response(data, status,pagination_info):
+def valid_response(data, status, pagination_info=None):
     response_body = {
         'message': 'successful',
         'data': data,
     }
     if pagination_info:
-        response_body['pagination_info']=pagination_info
+        response_body['pagination_info'] = pagination_info
     return request.make_json_response(response_body, status=status)
 
 
@@ -137,60 +137,73 @@ class PropertyApi(http.Controller):
     @http.route("/v1/properties", methods=["GET"], type="http", auth='none', csrf=False)
     def get_all_property(self):
         try:
-            # recieving params
-            params = parse_qs(request.httprequest.query_string.decode('utf-8'))
-            property_domain = []
+            # Parse params
+            params = parse_qs(request.httprequest.query_string.decode("utf-8"))
+
+            # Extract parameters safely
+            limit = int(params.get("limit", [0])[0]) if params.get("limit") else 0
+            page = int(params.get("page", [1])[0]) if params.get("page") else None
+            state = params.get("state", [None])[0]
+
+            # CASE 1: State filtering
+            domain = []
+            if state:
+                domain.append(("state", "=", state))
+
+            # Count records before pagination
+            record_count = request.env["property"].sudo().search_count(domain)
+
+            if record_count == 0:
+                return invalid_response("No records found for this request.", status=400)
+
+            # CASE 2: Pagination logic
             offset = 0
-            limit = 0
-            if params:
-                if params.get('limit'):
-                    limit = (params.get('limit')[0])
-                    print(limit)
-                if params.get('page'):
-                    page = int(params.get('page')[0])
-                    offset = ((page - 1) * int(limit))
-                    print(offset)
-            if params.get('state'):
-                property_domain += [("state", "=", params.get('state')[0])]
-                property_ids = request.env['property'].sudo().search(property_domain)
-                print(property_ids)
-                if not property_ids:
-                    return invalid_response(f"There are no records with the entered state = {params.get('state')[0]}",
-                                            status=400)
-                else:
-                    return valid_response([{
-                        "id": property.id,
-                        "name": property.name,
-                        "postcode": property.postcode,
-                        "bedrooms": property.bedrooms,
-                    } for property in property_ids], status=201)
-            else:
-                # offset takes (INT) and must equals to the record number previous to the one you want to show while limit takes (STR)
-                property_ids = request.env['property'].sudo().search([], offset=offset, limit=limit, order='id desc')
-                print(property_ids)
-                property_count = request.env['property'].sudo().search_count([])
-                print(property_count)
-                pages_num = math.ceil(property_count / int(limit))
-                if page <= pages_num:
-                    if not property_ids:
-                        return invalid_response(f"There are no records in this table", status=400)
+            if page and limit:
+                offset = (page - 1) * limit
 
-                    else:
-                        return valid_response([{
-                            "id": property_id.id,
-                            "name": property_id.name,
-                            "postcode": property_id.postcode,
-                            "bedrooms": property_id.bedrooms,
-                        } for property_id in property_ids], pagination_info={
-                            'page': page if page else 1,
-                            'limit': limit,
-                            'pages':pages_num,
-                            'record':property_count,
+            # CASE 3: Search with or without pagination
+            property_ids = request.env["property"].sudo().search(
+                domain,
+                offset=offset,
+                limit=limit if limit else None,
+                order="id desc"
+            )
 
-                        }, status=201)
-                else:
-                    return invalid_response(
-                        f'The page number you want to display is out of pages range:{pages_num} pages', status=400)
+            if not property_ids:
+                return invalid_response("No records found for the requested page.", status=400)
+
+            # Format response data
+            data = [{
+                "id": p.id,
+                "name": p.name,
+                "postcode": p.postcode,
+                "bedrooms": p.bedrooms,
+            } for p in property_ids]
+
+            # CASE 4: If no pagination → return simple result
+            if not limit:
+                return valid_response(data, status=200)
+
+            # CASE 5: If pagination → return pagination info
+            total_pages = math.ceil(record_count / limit)
+
+            # Invalid page check
+            if page > total_pages:
+                return invalid_response(
+                    f"Page {page} is out of range. Total pages = {total_pages}.",
+                    status=400
+                )
+
+            return valid_response(
+                data,
+                pagination_info={
+                    "page": page,
+                    "limit": limit,
+                    "pages": total_pages,
+                    "records": record_count,
+                },
+                status=200
+            )
 
         except Exception as error:
-            return invalid_response(error, status=400)
+            return invalid_response(str(error), status=400)

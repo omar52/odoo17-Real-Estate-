@@ -44,6 +44,7 @@
                     <header>
                         <div class="btn-group" role="group" aria-label="Basic example">
                             <!--                        <field name="state" widget="statusbar" statusbar_visible="draft,pending,sold" options="{'clickable':1}"/>-->
+                            <button name="get_properties" type="object" class="btn-primary btn" string="Get_Properties_Api_Integration"/>
                             <button name="action" type="object" class="btn-primary btn" string="Action"/>
 
                             <button name="action_draft" type="object" class="btn-primary btn" string="Set To Draft"
