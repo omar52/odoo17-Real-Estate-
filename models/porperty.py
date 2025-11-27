@@ -16,7 +16,20 @@ class Property(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     ref = fields.Char(default='New', readonly=1)
-    name = fields.Char(required=1, default='New', size=50,translate=1)
+
+
+    # very important note: vals['name'] is a Python string, but Odoo ORM
+    # internally sometimes tries to store it as JSON in the DB
+    # for Char / Text fields if:
+
+    # 1-The string comes from a JSON dict
+    # 2-The field has translate = True(your case)
+
+    # This is because Odoo internally converts translatable fields into a JSON structure to store translations.
+    # So even though your field is Char, Odoo converted the column to jsonb when you first posted via API with translate=1.
+    # name = fields.Char(required=1, default='New', size=50,translate=1)
+
+    name = fields.Char(required=1, default='New', size=50)
     description = fields.Text()
     postcode = fields.Char(required=1)
     date_availability = fields.Date(tracking=1)

@@ -5,6 +5,7 @@ from urllib.parse import parse_qs
 from PIL.ImageChops import offset
 
 from odoo import http
+from odoo.addons.test_impex.tests.test_load import values
 from odoo.http import request
 
 
@@ -28,6 +29,36 @@ def invalid_response(error, status):
 
 class PropertyApi(http.Controller):
 
+    # @http.route("/v1/property", methods=["POST"], type="http", auth='none', csrf=False)
+    # def post_property(self):
+    #     # Recieving the data:
+    #     args = request.httprequest.data.decode()  # get json data
+    #     vals = json.loads(args)  # convert json data to dictionary
+    #     # print(vals)
+    #
+    #     # validate:
+    #     if not vals.get('name'):
+    #         return invalid_response("Property name is required!!", status=400)
+    #     else:
+    #
+    #         # handling any error from creation operation using try except
+    #         try:
+    #             # make creation we used sudo() to create as a superuser
+    #             res = request.env['property'].sudo().create(vals)
+    #
+    #             # sending response: status code :
+    #             # 1- 200 : general success
+    #             # 2- 201 : Creation process success
+    #             if res:
+    #                 return request.make_json_response({
+    #                     "message": "property has been created successfully",
+    #                     "id": res.id,
+    #                     "name": res.name,
+    #                 }, status=201)
+    #         except Exception as error:
+    #             return (invalid_response(error, status=400)
+
+    # Using sql queries instead of ORM method for POST
     @http.route("/v1/property", methods=["POST"], type="http", auth='none', csrf=False)
     def post_property(self):
         # Recieving the data:
@@ -42,17 +73,19 @@ class PropertyApi(http.Controller):
 
             # handling any error from creation operation using try except
             try:
-                # make creation we used sudo() to create as a superuser
-                res = request.env['property'].sudo().create(vals)
-
-                # sending response: status code :
-                # 1- 200 : general success
-                # 2- 201 : Creation process success
+                cols = ', '.join(vals.keys())  # ==> name , postcode, ...
+                values = ', '.join(['%s'] * len(vals))  # ==> '%s', '%s', '%s', ...
+                cr = request.env.cr
+                query = f""" INSERT INTO property ({cols}) VALUES ({values}) RETURNING id ,name ,postcode """
+                cr.execute(query, tuple(vals.values()))
+                res = cr.fetchone()
+                print(res)
                 if res:
                     return request.make_json_response({
                         "message": "property has been created successfully",
-                        "id": res.id,
-                        "name": res.name,
+                        "id": res[0],
+                        "name": res[1],
+                        "postcode": res[2],
                     }, status=201)
             except Exception as error:
                 return invalid_response(error, status=400)
