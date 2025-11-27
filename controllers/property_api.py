@@ -1,16 +1,20 @@
 import json
+import math
 from urllib.parse import parse_qs
+
+from PIL.ImageChops import offset
 
 from odoo import http
 from odoo.http import request
 
 
-
-def valid_response(data, status):
+def valid_response(data, status,pagination_info):
     response_body = {
         'message': 'successful',
         'data': data,
     }
+    if pagination_info:
+        response_body['pagination_info']=pagination_info
     return request.make_json_response(response_body, status=status)
 
 
@@ -136,12 +140,23 @@ class PropertyApi(http.Controller):
             # recieving params
             params = parse_qs(request.httprequest.query_string.decode('utf-8'))
             property_domain = []
+            offset = 0
+            limit = 0
+            if params:
+                if params.get('limit'):
+                    limit = (params.get('limit')[0])
+                    print(limit)
+                if params.get('page'):
+                    page = int(params.get('page')[0])
+                    offset = ((page - 1) * int(limit))
+                    print(offset)
             if params.get('state'):
                 property_domain += [("state", "=", params.get('state')[0])]
                 property_ids = request.env['property'].sudo().search(property_domain)
+                print(property_ids)
                 if not property_ids:
-                    return invalid_response(f"There are no records with the entered state = {params.get('state')[0]}",status=400)
-
+                    return invalid_response(f"There are no records with the entered state = {params.get('state')[0]}",
+                                            status=400)
                 else:
                     return valid_response([{
                         "id": property.id,
@@ -150,17 +165,32 @@ class PropertyApi(http.Controller):
                         "bedrooms": property.bedrooms,
                     } for property in property_ids], status=201)
             else:
-                property_ids = request.env['property'].sudo().search([])
-                if not property_ids:
-                    return invalid_response(f"There are no records in this table")
+                # offset takes (INT) and must equals to the record number previous to the one you want to show while limit takes (STR)
+                property_ids = request.env['property'].sudo().search([], offset=offset, limit=limit, order='id desc')
+                print(property_ids)
+                property_count = request.env['property'].sudo().search_count([])
+                print(property_count)
+                pages_num = math.ceil(property_count / int(limit))
+                if page <= pages_num:
+                    if not property_ids:
+                        return invalid_response(f"There are no records in this table", status=400)
 
+                    else:
+                        return valid_response([{
+                            "id": property_id.id,
+                            "name": property_id.name,
+                            "postcode": property_id.postcode,
+                            "bedrooms": property_id.bedrooms,
+                        } for property_id in property_ids], pagination_info={
+                            'page': page if page else 1,
+                            'limit': limit,
+                            'pages':pages_num,
+                            'record':property_count,
+
+                        }, status=201)
                 else:
-                    return valid_response([{
-                        "id": property_id.id,
-                        "name": property_id.name,
-                        "postcode": property_id.postcode,
-                        "bedrooms": property_id.bedrooms,
-                    } for property_id in property_ids], status=201)
+                    return invalid_response(
+                        f'The page number you want to display is out of pages range:{pages_num} pages', status=400)
 
         except Exception as error:
-            return invalid_response(error,status=400)
+            return invalid_response(error, status=400)
