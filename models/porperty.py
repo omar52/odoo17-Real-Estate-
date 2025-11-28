@@ -298,7 +298,17 @@ class Property(models.Model):
         except Exception as error:
             raise ValidationError(str(error))
 
-        ################################################## end Overrriding functions #####################################################
+
+        # printing XLSX Report: the button appears once you select any record
+    def property_xlsx_report(self):
+        return{
+            'type':'ir.actions.act_url',
+            'url':f'/property/excel/report/{self.env.context.get("active_ids")}',
+            'target':'new',
+        }
+
+
+    ################################################## end Overrriding functions #####################################################
 
     class PropertyLine(models.Model):
         _name = 'property.line'

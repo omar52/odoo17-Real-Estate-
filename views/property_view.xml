@@ -7,6 +7,9 @@
         <field name="arch" type="xml">
 
             <tree class="header_custom" decoration-danger="(is_late)">
+                <header>
+                    <button name="property_xlsx_report" type="object" string="Print XLSX Report" class="btn-primary"/>
+                </header>
                 <field name="name"/>
                 <field name="owner_id"/>
                 <field name="postcode"/>
